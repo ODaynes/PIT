@@ -14,6 +14,7 @@ class Container:
     def __init__(self, filepath):
         self.filepath = filepath
         self.plain = FileIO.read_file(filepath)
+        self.processed = ""
 
     def path(self):
         return self.filepath
@@ -22,4 +23,7 @@ class Container:
         return self.plain
 
     def processed_contents(self):
-        return
+        if self.processed == "":
+            self.processed = FileIO.normalise(self.plain)
+        return self.processed
+
