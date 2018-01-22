@@ -12,7 +12,11 @@ import FileIO
 class Container:
 
     def __init__(self, filepath):
+        self.filepath = filepath
         self.plain = FileIO.read_file(filepath)
+
+    def path(self):
+        return self.filepath
 
     def unmodified_contents(self):
         return self.plain
