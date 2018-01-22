@@ -37,11 +37,25 @@ def read_file(filepath):
     if ext == "doc" or ext == "docx":
         return read_docx(filepath)
 
-    return None
+    return "Invalid file format"
+
+
+"""
+Returns a single string of all text within the file.
+"""
 
 
 def read_txt(filepath):
-    return
+    result = ""
+
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+
+    for line in lines:
+        for word in line.split():
+            result += word + " "
+
+    return result
 
 
 def read_doc(filepath):
