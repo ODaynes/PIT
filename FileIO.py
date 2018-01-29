@@ -9,12 +9,15 @@ More information can be found here: https://python-docx.readthedocs.io/en/latest
 
 docx2txt is a library designed to extract text from doc and docx files.
 More information can be found here: https://github.com/ankushshah89/python-docx2txt
+
+PyPDF2 is a library designed to read and write pdf files.
+More information can be found here: https://github.com/mstamy2/PyPDF2
 """
 
 import os
 
-import docx
 import docx2txt
+import PyPDF2
 
 
 def get_extension(filepath):
@@ -36,6 +39,8 @@ def read_file(filepath):
         return read_txt(filepath)
     if ext == "doc" or ext == "docx":
         return read_docx(filepath)
+    if ext == "pdf":
+        return read_pdf(filepath)
 
     return "Invalid file format"
 
@@ -58,12 +63,18 @@ def read_txt(filepath):
     return result
 
 
-def read_doc(filepath):
-    return
-
-
 def read_docx(filepath):
     return docx2txt.process(filepath)
+
+
+def read_pdf(filepath):
+    file_obj = open(filepath, "rb")
+    reader = PyPDF2.PdfFileReader(file_obj)
+
+    result = ""
+    for i in range(0, reader.numPages):
+        result += reader.getPage(i).extractText().replace("\n", "")
+    return result
 
 
 def normalise(document):
