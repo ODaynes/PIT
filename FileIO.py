@@ -12,12 +12,19 @@ More information can be found here: https://github.com/ankushshah89/python-docx2
 
 PyPDF2 is a library designed to read and write pdf files.
 More information can be found here: https://github.com/mstamy2/PyPDF2
+
+NLTK (natural language tool kit) is a library with a variety of
+different natural language processing utilities.
+More information can be found here: http://www.nltk.org/
 """
 
 import os
 
 import docx2txt
 import PyPDF2
+
+from nltk.corpus import stopwords
+from nltk.stem.porter import *
 
 
 def get_extension(filepath):
