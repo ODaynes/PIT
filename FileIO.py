@@ -1,6 +1,6 @@
 """
 FileIO.py should include all methods used to read
-and normalise files before both comparison.
+and write files.
 
 Designed and created by Owen Daynes.
 
@@ -12,19 +12,12 @@ More information can be found here: https://github.com/ankushshah89/python-docx2
 
 PyPDF2 is a library designed to read and write pdf files.
 More information can be found here: https://github.com/mstamy2/PyPDF2
-
-NLTK (natural language tool kit) is a library with a variety of
-different natural language processing utilities.
-More information can be found here: http://www.nltk.org/
 """
 
 import os
 
 import docx2txt
 import PyPDF2
-
-from nltk.corpus import stopwords
-from nltk.stem.porter import *
 
 
 def get_extension(filepath):
@@ -53,7 +46,7 @@ def read_file(filepath):
 
 
 """
-Returns a single string of all text within the file.
+Returns a single string of all text within the txt file.
 """
 
 
@@ -69,9 +62,17 @@ def read_txt(filepath):
 
     return result
 
+"""
+Returns a single string of all text within the doc or docx file.
+"""
+
 
 def read_docx(filepath):
     return docx2txt.process(filepath)
+
+"""
+Returns a single string of all text within the pdf file.
+"""
 
 
 def read_pdf(filepath):
@@ -83,18 +84,27 @@ def read_pdf(filepath):
         result += reader.getPage(i).extractText().replace("\n", "")
     return result
 
-
-def normalise(document):
-    return
-
-
-def normalise_doc(document):
-    return
-
-
-def normalise_docx(document):
-    return
+"""
+Returns a list of all files within a directory.
+Returns an empty list if invalid directory 
+or a list of length one if a filepath is provided
+Searches all sub-directories if recursive flag is true.
+"""
 
 
-def normalise_txt(document):
-    return
+def generate_file_list(directory, recursive=True):
+    result = []
+    print(directory)
+    if os.path.isfile(directory):
+        result.append(os.path.abspath(directory))
+
+    if not os.path.isfile(directory):
+        if os.path.isdir(directory):
+            for path in os.listdir(directory):
+                abs_path = os.path.abspath(path)
+                print(abs_path)
+                if os.path.isdir(abs_path) and recursive:
+                    result += generate_file_list(abs_path, True)
+                else:
+                    result.append(abs_path)
+    return result
