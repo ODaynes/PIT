@@ -9,6 +9,9 @@ different natural language processing utilities.
 More information can be found here: http://www.nltk.org/
 """
 
+from nltk import word_tokenize
+from string import punctuation
+
 """
 Takes a string representation of a document as the parameter
 Returns a string representation of a document with all punctuation removed
@@ -25,4 +28,11 @@ Returns a list containing each unique word in the provided document
 
 
 def word_bag(document):
-    return
+    bag = []
+    tokens = word_tokenize(document)
+    for token in tokens:
+        if token not in bag and token not in punctuation:
+            bag.append(token)
+    return bag
+
+
