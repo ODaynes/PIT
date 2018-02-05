@@ -19,7 +19,8 @@ Returns a string representation of a document with all punctuation removed
 
 
 def remove_punctuation(document):
-    return
+    return document.translate(str.maketrans("", "", punctuation))
+
 
 """
 Takes a string representation of a document as the parameter
