@@ -36,3 +36,12 @@ def word_bag(document):
     return bag
 
 
+"""
+Takes a list representation of a document and either the Snowball or Porter stemmer as the parameters
+Returns a list containing each word from the original document stemmed
+"""
+
+
+def stem_document(document, stemmer):
+    result = [stemmer.stem(word) for word in document]
+    return result
