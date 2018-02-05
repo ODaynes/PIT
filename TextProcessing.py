@@ -45,3 +45,19 @@ Returns a list containing each word from the original document stemmed
 def stem_document(document, stemmer):
     result = [stemmer.stem(word) for word in document]
     return result
+
+
+"""
+Takes a list of document-lists as the parameter
+Returns a list of each unique word representing the entire vocabulary of all input documents
+"""
+
+
+def get_vocabulary(documents):
+    result = []
+    for document in documents:
+        for word in document:
+            if word not in result:
+                result.append(word)
+
+    return result
