@@ -41,8 +41,9 @@ def read_file(filepath):
         return read_docx(filepath)
     if ext == "pdf":
         return read_pdf(filepath)
-
-    return "Invalid file format"
+    
+    # file could not be read
+    return False
 
 
 """
