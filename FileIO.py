@@ -95,7 +95,6 @@ Searches all sub-directories if recursive flag is true.
 
 def generate_file_list(directory, recursive=True):
     result = []
-    print(directory)
     if os.path.isfile(directory):
         result.append(os.path.abspath(directory))
 
@@ -103,7 +102,6 @@ def generate_file_list(directory, recursive=True):
         if os.path.isdir(directory):
             for path in os.listdir(directory):
                 abs_path = os.path.abspath(path)
-                print(abs_path)
                 if os.path.isdir(abs_path) and recursive:
                     result += generate_file_list(abs_path, True)
                 else:
