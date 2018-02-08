@@ -16,6 +16,11 @@ class Container:
         self.plain = FileIO.read_file(filepath)
         self.processed = ""
 
+    def __init__(self, filepath, id, plaintext):
+        self.filepath = filepath
+        self.id = id
+        self.plain = plaintext
+
     def path(self):
         return self.filepath
 
