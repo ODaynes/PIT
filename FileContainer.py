@@ -11,24 +11,39 @@ import FileIO
 
 class Container:
 
-    def __init__(self, filepath):
-        self.filepath = filepath
-        self.plain = FileIO.read_file(filepath)
-        self.processed = ""
+    def __index__(self):
+        self.path = ""
 
-    def __init__(self, filepath, id, plaintext):
-        self.filepath = filepath
-        self.id = id
-        self.plain = plaintext
+    # def __init__(self, filepath):
+    #     self.filepath = filepath
+    #     self.raw = FileIO.read_file(filepath)
+    #     self.processed = ""
+    #
+    # def __init__(self, filepath, id, plaintext):
+    #     self.filepath = filepath
+    #     self.id = id
+    #     self.raw = plaintext
+    #     self.tokenised = ""
+    #     self.stems = ""
+    #     self.frequencies = dict()
 
     def path(self):
         return self.filepath
 
-    def unmodified_contents(self):
-        return self.plain
+    def raw(self):
+        return self.raw
+
+    def tokens(self):
+        return self.tokenised
+
+    def stems(self):
+        return self.stems
+
+    def frequencies(self):
+        return self.frequencies
 
     def processed_contents(self):
         if self.processed == "":
-            self.processed = FileIO.normalise(self.plain)
+            self.processed = FileIO.normalise(self.raw)
         return self.processed
 
