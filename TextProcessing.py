@@ -11,6 +11,7 @@ More information can be found here: http://www.nltk.org/
 
 from nltk import word_tokenize
 from string import punctuation
+from math import log
 
 """
 Takes a string representation of a document as the parameter
@@ -32,8 +33,8 @@ def word_bag(document):
     bag = []
     tokens = word_tokenize(document)
     for token in tokens:
-        if token not in bag and token not in punctuation:
-            bag.append(token)
+        if token.lower() not in bag and token.lower() not in punctuation:
+            bag.append(token.lower())
     return bag
 
 
@@ -62,3 +63,21 @@ def get_vocabulary(documents):
                 result.append(word)
 
     return result
+
+
+"""
+Takes a term and a list of tokenised documents as the parameters
+Returns the inverse document frequency of the term
+"""
+
+
+def calculate_idf(term, documents):
+    documents_containing_term = 0
+    for document in documents:
+        if term.lower() in document:
+            documents_containing_term += 1
+
+    if documents_containing_term > 0:
+        return 1.0 + log(float(len(documents)) / documents_containing_term)
+    else:
+        return 1.0
