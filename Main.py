@@ -6,123 +6,90 @@ from TextProcessing import *
 from nltk.corpus import stopwords
 from string import punctuation
 from copy import copy
-
+from math import log
 
 
 def main():
 
+    # get filepaths
+
     filepaths = generate_file_list(".", True)
+
+    # terminate program if no paths
 
     if len(filepaths) < 1:
         print("No files found")
         return
 
-    containers = list()
-    raw_contents, invalid_files = list(), list()
+    # invalid files are reported in error report
+    # valid files are processed further
+
+    containers, invalid_files = list(), list()
+
+    # record vocabulary
+
     vocabulary = list()
     global_word_counts = dict()
-    word_counts = dict()
-    raw_files = list()
-    tokenised_files = list()
 
     for index, path in enumerate(filepaths, 1):
+
         file_contents = read_file(path)
-        if file_contents is False:
+
+        if file_contents is False:  # file cannot be read
             invalid_files.append((index, path))
-        else:
+        else:                       # file can be read
             c = Container()
             c.path = path
             c.index = index
+
+            # get each token, remove punctuation and make it lower case
+
             c.raw = file_contents
-            c.tokens = word_tokenize(file_contents)
-            c.lowered_tokens_no_stopwords = [token.lower() for token in c.tokens if token.lower() not in stopwords.words("english") and token not in punctuation]
-            [vocabulary.append(token) for token in c.lowered_tokens_no_stopwords if token not in vocabulary]
-            for word in c.lowered_tokens_no_stopwords:
-                if word not in word_counts:
-                    word_counts[word] = 1
-                else:
-                    word_counts[word] = word_counts[word] + 1
+            c.tokens = word_tokenize(c.raw)
+            c.normalised = [token.lower() for token in c.tokens if token not in punctuation] # token.lower() not in stopwords.words("english") and
+            [vocabulary.append(token) for token in c.normalised if token not in vocabulary]
+
+            for word in c.normalised:
 
                 if word not in global_word_counts:
                     global_word_counts[word] = 1
                 else:
                     global_word_counts[word] = global_word_counts[word] + 1
 
-            c.term_counts = word_counts
-
-            term_freqs = dict()
-
-            for term, count in c.term_counts.items():
-                freq = count/len(c.lowered_tokens_no_stopwords)
-                term_freqs[term] = freq
-
-            c.term_frequencies = term_freqs
+            c.term_frequencies = dict()
 
             containers.append(c)
-            # raw_contents.append((index, file_contents))
 
-    print(word_counts)
+    # calculate term frequencies for each term in each file
 
-    print(vocabulary)
+    for container in containers:
+        for word in vocabulary:
+            container.term_frequencies[word] = container.normalised.count(word) / len(container.normalised)
+
     default_frequency_map = dict()
-    frequencies = list()
 
     for word in vocabulary:
         default_frequency_map[word] = 1
 
-    for container in containers:
-        f = copy(default_frequency_map)
-        for word in container.lowered_tokens_no_stopwords:
-            f[word] = f[word] + 1
-        frequencies.append(f)
+    # debugging test
 
-    # print(frequencies[0])
-    # print(frequencies[1])
+    document = containers[0]
 
-    similarity = 0
+    print(document.term_frequencies["learning"] * calculate_idf("learning", [c.normalised for c in containers]))
 
-    for key, value in frequencies[0].items():
-        print(key)
-        s = (value/len(frequencies[0])) * (frequencies[1][key]/len(frequencies[1]))
-        print(s)
-        similarity += s
 
-    print(similarity)
+"""
+Takes two TD-IDF vectors
+Returns dot product of vectors
+"""
 
-    #
-    # if len(raw_contents) > 1:
-    #     for raw in raw_contents:
-    #         print(remove_punctuation(raw[1]))
-    #else:
-    #    print("None of files entered could be read. Only txt, doc, docx and pdf files can be read using this program.")
 
-    # for index, path in enumerate(filepaths, 1):
-    #     file_text = read_file(path)
-    #     if file_text is not False:
-    #         raw_files.append(file_text)
-    #
-    #     if not file_text:
-    #         invalid_files.append((index, path))
-    #     else:
-    #         c = Container(path, index, file_text)
-    #         valid_files.append(c)
-    #
-    # if len(valid_files) < 1:
-    #     print("None of files entered could be read. Only txt, doc, docx and pdf files can be read using this program.")
-    # else:
-    #     for file in raw_files:
-    #         tokenised_files.append(word_tokenize(remove_punctuation(file)))
-    #     print(raw_files)
-    #     print(tokenised_files)
-    #     #tokenised_files =
-    #
-    # return
-
+def dot_product(document1, document2):
+    result = 0
+    for i in range(0, len(document1)):
+        result += document1[i] * document2[i]
+    return result
 
 
 if __name__ == "__main__":
-    a = 1
-    b = a
-    b += 1
-    print(a)
     main()
