@@ -81,3 +81,20 @@ def calculate_idf(term, documents):
         return 1.0 + log(float(len(documents)) / documents_containing_term)
     else:
         return 1.0
+
+
+"""
+Takes a FileContainer object as a parameter
+Uses term frequencies and other text processing functions 
+to create vector representing document
+"""
+
+
+def create_document_vector(container_obj):
+    vector = []
+
+    for term, frequency in container_obj.term_frequencies.items():
+        tf_idf = frequency * container_obj.inverse_document_frequencies[term]
+        vector.append(tf_idf)
+
+    return vector
