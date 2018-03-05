@@ -8,6 +8,8 @@ Designed and created by Owen Daynes.
 
 import math
 
+from TextProcessing import calculate_idf
+
 """
 Takes two vectors
 Returns dot product of vectors
@@ -31,7 +33,8 @@ def calculate_norm(vector):
 
     norm = 0
     for element in vector:
-        norm += element**2
+        if element != 0.0:
+            norm += element**2
     return math.sqrt(norm)
 
 
