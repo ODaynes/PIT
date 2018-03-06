@@ -177,8 +177,6 @@ def generate_html_string(result_list, error_list, threshold=0.7):
 
         string += "</table>"
 
-
-
     string += "</body>"
     string += "</html>"
 
