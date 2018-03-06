@@ -98,3 +98,21 @@ def create_document_vector(container_obj):
         vector.append(tf_idf)
 
     return vector
+
+
+"""
+Takes two container objects as parameters
+Creates and returns two dense vectors containing 
+tf-idfs for all shared terms.
+"""
+
+
+def create_dense_vectors(container_x, container_y):
+    shared_vocabulary = list(set(container_x.normalised).intersection(set(container_y.normalised)))
+    new_x, new_y = list(), list()
+
+    for term in shared_vocabulary:
+        new_x.append(container_x.term_frequencies[term] * container_x.inverse_document_frequencies[term])
+        new_y.append(container_y.term_frequencies[term] * container_y.inverse_document_frequencies[term])
+
+    return new_x, new_y

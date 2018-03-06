@@ -96,17 +96,6 @@ def main():
 
             print(container_x.path, container_y.path, similarity)
 
-def create_dense_vectors(container_x, container_y):
-    shared_vocabulary = list(set(container_x.normalised).intersection(set(container_y.normalised)))
-    # shared_vocabulary = set([term for term, frequency in container_x.term_frequencies.items() if frequency > 0]).intersection(set([term for term, frequency in container_y.term_frequencies.items() if frequency > 0]))
-    new_x, new_y = list(), list()
 
-    for term in shared_vocabulary:
-        new_x.append(container_x.term_frequencies[term] * container_x.inverse_document_frequencies[term])
-        new_y.append(container_y.term_frequencies[term] * container_y.inverse_document_frequencies[term])
-
-    return new_x, new_y
-
-#def new_cosine_similarity(vector_x, vector_y, )
 if __name__ == "__main__":
     main()
