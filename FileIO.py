@@ -110,6 +110,7 @@ def generate_file_list(directory, recursive=True):
                     result.append(abs_path)
     return result
 
+
 """
 Takes a string and file path as parameters
 Writes string to specified path
@@ -119,3 +120,66 @@ Writes string to specified path
 def write_string_to_file(string, filepath):
     with open(filepath, "w") as f:
         f.write(string)
+
+
+"""
+Takes list of similarity tuples (path1, path2, similarity) as parameter
+Takes list of errors as second parameter and plagiarism threshold as optional third parameter
+Returns string of html page including results and errors in table 
+"""
+
+
+def generate_html_string(result_list, error_list, threshold=0.7):
+    string = "<!DOCTYPE html><html><title>Similarity Report</title>"
+    string += "<body>"
+    string += "<style>"
+    string += " * { margin: auto; text-align: center; }"
+    string += " table, tr, td { border: 1px solid black }"
+    string += "</style>"
+    string += "<h1> Similarity Report </h1> <br />"
+    string += "Plagiarism threshold = " + str(threshold) + "<br /> <br />"
+
+    if len(result_list) > 0:
+        string += "<h2>Similarity table</h2> <br />"
+        string += '<table> \
+                      <tr> \
+                        <th>File 1</th> \
+                        <th>File 2</th> \
+                        <th>Similarity</th> \
+                      </tr>'
+
+        for result in result_list:
+            colour = "#0ce008" if result[2] < threshold else "#e50b00"
+            string += '<tr>\
+                        <td>' + str(result[0]) + '</td>' + \
+                        '<td>' + str(result[1]) + '</td>' + \
+                        '<td style="background-color: ' + colour + '">' + str(result[2]) + '</td>\
+                      </tr>'
+
+        string += "</table>"
+
+    else:
+        string += "No valid files were found."
+
+    if len(error_list) > 0:
+        string += "<br /> <h2>Errors table</h2> <br />"
+        string += '<table> \
+                      <tr> \
+                        <th>File</th> \
+                        <th>Error message</th> \
+                      </tr>'
+
+        for error in error_list:
+            string += '<tr>\
+                        <td>' + str(error[0]) + '</td>' + \
+                        '<td>' + str(error[1]) + '</td>' + \
+                      '</tr>'
+
+        string += "</table>"
+
+
+
+    string += "</body>"
+    string += "</html>"
+
+    return string
