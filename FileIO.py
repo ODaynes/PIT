@@ -63,6 +63,7 @@ def read_txt(filepath):
 
     return result
 
+
 """
 Returns a single string of all text within the doc or docx file.
 """
@@ -70,6 +71,7 @@ Returns a single string of all text within the doc or docx file.
 
 def read_docx(filepath):
     return docx2txt.process(filepath)
+
 
 """
 Returns a single string of all text within the pdf file.
@@ -107,3 +109,13 @@ def generate_file_list(directory, recursive=True):
                 else:
                     result.append(abs_path)
     return result
+
+"""
+Takes a string and file path as parameters
+Writes string to specified path
+"""
+
+
+def write_string_to_file(string, filepath):
+    with open(filepath, "w") as f:
+        f.write(string)
