@@ -33,8 +33,7 @@ def calculate_norm(vector):
 
     norm = 0
     for element in vector:
-        if element != 0.0:
-            norm += element**2
+        norm += element**2
     return math.sqrt(norm)
 
 
@@ -47,7 +46,9 @@ Returns cosine similarity between vectors
 def cosine_similarity(document1, document2):
     dot = dot_product(document1, document2)
 
-    d1 = calculate_norm(document1)
-    d2 = calculate_norm(document2)
+    d1 = math.sqrt(dot_product(document1, document1))
+    d2 = math.sqrt(dot_product(document2, document2))
 
-    return dot * (d1 / d2)
+    denom = d1 * d2
+
+    return dot / denom
