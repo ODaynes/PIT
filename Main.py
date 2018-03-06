@@ -80,19 +80,21 @@ def main():
     for word in vocabulary:
         default_frequency_map[word] = 1
 
-    # debugging test
+    # calculate similarity between all valid files
 
-    x, y = create_dense_vectors(containers[1], containers[2])
-    z = cosine_similarity(x, y)
+    for x in range(0, len(containers)):
+        for y in range(x + 1, len(containers)):
+            container_x = containers[x]
+            container_y = containers[y]
 
-    print(z)
+            vector_x, vector_y = create_dense_vectors(container_x, container_y)
 
-    # print(vocabulary)
-    # print(cosine_similarity(containers[0].vector, containers[1].vector))
-    # print(cosine_similarity(containers[0].vector, containers[2].vector))
-    # print(cosine_similarity(containers[0].vector, containers[3].vector))
-    # print(cosine_similarity(containers[1].vector, containers[2].vector))
+            if len(vector_x) == 0 or len(vector_y) == 0:
+                similarity = 0.0
+            else:
+                similarity = cosine_similarity(vector_x, vector_y)
 
+            print(container_x.path, container_y.path, similarity)
 
 def create_dense_vectors(container_x, container_y):
     shared_vocabulary = list(set(container_x.normalised).intersection(set(container_y.normalised)))
