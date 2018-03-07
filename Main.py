@@ -82,6 +82,8 @@ def main():
 
     # calculate similarity between all valid files
 
+    results = []
+
     for x in range(0, len(containers)):
         for y in range(x + 1, len(containers)):
             container_x = containers[x]
@@ -94,8 +96,12 @@ def main():
             else:
                 similarity = cosine_similarity(vector_x, vector_y)
 
-            print(container_x.path, container_y.path, similarity)
+            results.append((container_x.path, container_y.path, similarity))
 
+    print(results)
+
+    string = generate_html_string(results, [("path", "msg")])
+    write_string_to_file(string, "test.html")
 
 if __name__ == "__main__":
     main()
