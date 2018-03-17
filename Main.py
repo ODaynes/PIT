@@ -1,22 +1,29 @@
-import os
+import sys
+
+from nltk.corpus import stopwords
+from nltk.stem import snowball
 
 from FileIO import *
 from FileContainer import Container
 from TextProcessing import *
 from VectorMaths import *
 
-from nltk.corpus import stopwords
-from nltk.stem import snowball
-from string import punctuation
 
+def main(directory, threshold=0.7):
 
-def main():
+    try:
+        threshold = float(threshold)
+    except ValueError:
+        print("Invalid threshold value provided.")
+        print("Using default 0.7")
+        threshold = 0.7
 
-    threshold = 0.5
+    if threshold > 1:
+        threshold /= 100
 
     # get filepaths
 
-    filepaths = generate_file_list("./data", True)
+    filepaths = generate_file_list(directory, True)
 
     # terminate program if no paths
 
@@ -32,50 +39,63 @@ def main():
     # record vocabulary
 
     vocabulary = list()
-    #global_word_counts = dict()
 
     stemmer = snowball.EnglishStemmer()
 
-
-
     for index, path in enumerate(filepaths, 1):
 
-        file_contents = read_file(path)
+        try:
+            file_contents = read_file(path)     # file can be opened
+        except Exception:                       # file cannot be opened
+            print("File %s could not be opened" % path)
+            invalid_files.append((path, "File could not be opened."))
+            continue
 
-        if file_contents is False:  # file cannot be read
+        if file_contents is False:  # file contents cannot be read
             invalid_files.append((path, "File is not in an acceptable format."))
             continue
-        else:                       # file can be read
+        else:                       # file contents can be read
             print("Parsing %s" % path)
             c = Container()
             c.path = path
             c.index = index
 
-            # get each token, remove punctuation and make it lower case
+            # store raw file contents
 
             c.raw = file_contents
 
             print("Retrieved raw text")
 
+            # tokenise file conents
+
             c.tokens = word_tokenize(c.raw)
 
             print("Tokenised")
 
-            c.normalised = [stemmer.stem(token.lower()) for token in c.tokens if token not in punctuation and token.lower() not in stopwords.words("english")] # token.lower() not in stopwords.words("english") and
+            # only keep token stems if tokens aren't punctuation or stop words
+
+            c.normalised = [stemmer.stem(token.lower()) for token in c.tokens
+                            if token not in punctuation and token.lower() not in stopwords.words("english")]
 
             print("Normalised")
 
+            # cannot compare files with no text, report error and skip
+
+            if len(c.normalised) < 1:
+                print("File %s is either empty or contains no significant terms." % path)
+                invalid_files.append((path, "File is either empty or contains no significant terms"))
+                continue
+
+            # add any new words to global vocabulary
+
             [vocabulary.append(token) for token in c.normalised if token not in vocabulary]
 
-            # for word in c.normalised:
-            #
-            #     if word not in global_word_counts:
-            #         global_word_counts[word] = 1
-            #     else:
-            #         global_word_counts[word] = global_word_counts[word] + 1
+            # initialise frequency dictionaries
 
             c.term_frequencies = dict()
             c.inverse_document_frequencies = dict()
+
+            # store container to allow further processing later
 
             containers.append(c)
 
@@ -91,42 +111,29 @@ def main():
 
     print("Calculating inverse document frequencies")
 
-
-    idf = dict()
+    inverse_document_frequencies = dict()
 
     for word in vocabulary:
-        idf[word] = calculate_idf(word, normalised_documents)
+        inverse_document_frequencies[word] = calculate_idf(word, normalised_documents)
 
     print("Calculating term frequencies")
 
     for container in containers:
         for word in vocabulary:
-            #if container.normalised.count(word) > 0:
             container.term_frequencies[word] = container.normalised.count(word) / len(container.normalised)
-            # container.inverse_document_frequencies = idf.copy()
-        # container.vector = create_document_vector(container)
 
-    print("Copying idfs")
+    # shallow-copying already existing idf dict is faster than recreating each time
 
     for container in containers:
-        container.inverse_document_frequencies = idf.copy()
+        container.inverse_document_frequencies = inverse_document_frequencies.copy()
 
     print("Calculated term frequencies and inverse document frequencies")
-
-    # default_frequency_map = dict()
-
-    # for word in vocabulary:
-    #     default_frequency_map[word] = 1
-
-    # calculate similarity between all valid files
-
-    # vector_x, vector_y = create_dense_vectors(containers[0], containers[3])
-    # print(vector_x)
-    # print(vector_y)
 
     print("Now comparing documents")
 
     results = []
+
+    # calculate similarity for every pair of documents
 
     for x in range(0, len(containers)):
         for y in range(x + 1, len(containers)):
@@ -138,17 +145,27 @@ def main():
             if len(vector_x) == 0 or len(vector_y) == 0:
                 similarity = 0.0
             else:
-                similarity = cosine_similarity(vector_x, vector_y)
+                similarity = round(cosine_similarity(vector_x, vector_y), 4)
 
-            #if similarity >= threshold:
-            results.append((container_x.path, container_y.path, similarity))
+            if similarity >= threshold:
+                results.append((container_x.path, container_y.path, similarity))
 
-    print(results)
+    # generate html string to write to file
 
     string = generate_html_string(results, invalid_files, threshold)
+
+    # write html string to file
+
     write_string_to_file(string, "similarity_report.html")
 
     print("Report generated")
 
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1:
+        if len(sys.argv) > 2:
+            main(sys.argv[1], sys.argv[2])
+        else:
+            main(sys.argv[1])
+    else:
+        main("./data")
