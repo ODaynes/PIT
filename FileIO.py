@@ -7,7 +7,7 @@ Designed and created by Owen Daynes.
 DOCX is a library designed to create and update Microsoft Word files.
 More information can be found here: https://python-docx.readthedocs.io/en/latest/
 
-docx2txt is a library designed to extract text from doc and docx files.
+docx2txt is a library designed to extract text from docx files.
 More information can be found here: https://github.com/ankushshah89/python-docx2txt
 
 PyPDF2 is a library designed to read and write pdf files.
@@ -15,6 +15,7 @@ More information can be found here: https://github.com/mstamy2/PyPDF2
 """
 
 import os
+
 
 import docx2txt
 import PyPDF2
@@ -37,11 +38,12 @@ def read_file(filepath):
 
     if ext == "txt":
         return read_txt(filepath)
-    if ext == "doc" or ext == "docx":
+    if ext == "docx":
         return read_docx(filepath)
     if ext == "pdf":
         return read_pdf(filepath)
-    
+
+
     # file could not be read
     return False
 
@@ -97,13 +99,17 @@ Searches all sub-directories if recursive flag is true.
 
 def generate_file_list(directory, recursive=True):
     result = []
+    directory = os.path.abspath(directory)
+
     if os.path.isfile(directory):
         result.append(os.path.abspath(directory))
 
-    if not os.path.isfile(directory):
+    else:
         if os.path.isdir(directory):
             for path in os.listdir(directory):
-                abs_path = os.path.abspath(path)
+
+                abs_path = directory + "\\" + path
+                # abs_path = os.path.abspath(path)
                 if os.path.isdir(abs_path) and recursive:
                     result += generate_file_list(abs_path, True)
                 else:
