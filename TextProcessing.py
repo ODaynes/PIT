@@ -108,7 +108,7 @@ tf-idfs for all shared terms.
 
 
 def create_dense_vectors(container_x, container_y):
-    shared_vocabulary = list(set(container_x.normalised).intersection(set(container_y.normalised)))
+    shared_vocabulary = list(set(container_x.normalised).union(set(container_y.normalised)))
     new_x, new_y = list(), list()
 
     for term in shared_vocabulary:
