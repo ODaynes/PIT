@@ -6,6 +6,15 @@ from tkinter import *
 import threading
 
 
+def launch_about_window():
+    msg = "Plagiarism Indication Tool (PIT)" \
+          "\nVersion 1.0" \
+          "\nCreated by Owen Daynes" \
+          "\n\nThe Plagiarism Indication Tool has been created to compare a collection of documents and report the similarities back to the user."
+
+    messagebox.showinfo("About", msg)
+
+
 def exit_prog():
     sys.exit(0)
 
@@ -47,7 +56,7 @@ def error_popup(error_list):
     for error in error_list:
         msg += error + "\n\n"
 
-    messagebox.showinfo("Error encountered", msg.strip())
+    messagebox.showerror("Error encountered", msg.strip())
 
 root = Tk()
 root.geometry("600x400")
@@ -79,7 +88,7 @@ filemenu.add_command(label="Exit", command=exit_prog)
 
 helpmenu = Menu(menu)
 menu.add_cascade(label="Help", menu=helpmenu)
-helpmenu.add_command(label="About...", command=calculate)
+helpmenu.add_command(label="About...", command=launch_about_window)
 
 process_button = Button(root, text="Calculate similarity", command=calculate)
 process_button.grid(row=2, column=0, columnspan=1)
