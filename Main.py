@@ -8,6 +8,19 @@ from FileContainer import Container
 from TextProcessing import *
 from VectorMaths import *
 
+# bubblesort similarity tuples
+
+
+def order_similarity_tuples(tuples):
+    if len(tuples) == 0:
+        return []
+    else:
+        for pivot in range(len(tuples) - 1, 0, -1):
+            for i in range(pivot):
+                if tuples[i][2] < tuples[i + 1][2]:
+                    tuples[i], tuples[i + 1] = tuples[i + 1], tuples[i]
+        return tuples
+
 
 def main(directory, threshold=0.7):
 
@@ -133,6 +146,8 @@ def main(directory, threshold=0.7):
 
     results = []
 
+    threshold *= 100
+
     # calculate similarity for every pair of documents
 
     for x in range(0, len(containers)):
@@ -145,10 +160,14 @@ def main(directory, threshold=0.7):
             if len(vector_x) == 0 or len(vector_y) == 0:
                 similarity = 0.0
             else:
-                similarity = round(cosine_similarity(vector_x, vector_y), 4)
+                similarity = round(cosine_similarity(vector_x, vector_y) * 100, 2)
 
             if similarity >= threshold:
                 results.append((container_x.path, container_y.path, similarity))
+
+    print("Ordering results")
+
+    results = order_similarity_tuples(results)
 
     # generate html string to write to file
 
@@ -162,10 +181,15 @@ def main(directory, threshold=0.7):
 
 
 if __name__ == "__main__":
+    # path provided
     if len(sys.argv) > 1:
+        # threshold provided
         if len(sys.argv) > 2:
             main(sys.argv[1], sys.argv[2])
+        # threshold not provided
         else:
             main(sys.argv[1])
+    # path not provided
     else:
-        main("./data")
+        print("Path of directory containing files required.")
+        print("\"main.py <read_path> <threshold>?\"")
