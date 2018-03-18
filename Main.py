@@ -22,7 +22,7 @@ def order_similarity_tuples(tuples):
         return tuples
 
 
-def main(directory, threshold=0.7):
+def main(directory, threshold=0.7, include=False):
 
     try:
         threshold = float(threshold)
@@ -60,7 +60,7 @@ def main(directory, threshold=0.7):
         try:
             file_contents = read_file(path)     # file can be opened
         except Exception:                       # file cannot be opened
-            print("File %s could not be opened" % path)
+            print("File %s could not be opened\n" % path)
             invalid_files.append((path, "File could not be opened."))
             continue
 
@@ -68,6 +68,7 @@ def main(directory, threshold=0.7):
             invalid_files.append((path, "File is not in an acceptable format."))
             continue
         else:                       # file contents can be read
+            print("\n")
             print("Parsing %s" % path)
             c = Container()
             c.path = path
@@ -77,20 +78,20 @@ def main(directory, threshold=0.7):
 
             c.raw = file_contents
 
-            print("Retrieved raw text")
+            # print("Retrieved raw text")
 
             # tokenise file conents
 
             c.tokens = word_tokenize(c.raw)
 
-            print("Tokenised")
+            # print("Tokenised")
 
             # only keep token stems if tokens aren't punctuation or stop words
 
             c.normalised = [stemmer.stem(token.lower()) for token in c.tokens
                             if token not in punctuation and token.lower() not in stopwords.words("english")]
 
-            print("Normalised")
+            # print("Normalised")
 
             # cannot compare files with no text, report error and skip
 
@@ -116,20 +117,23 @@ def main(directory, threshold=0.7):
 
     # collect normalised documents in a single list to be used in idf calculation
 
+    print("\nGathering normalised documents...")
+
     normalised_documents = [container.normalised for container in containers]
 
-    print("Normalised documents gathered")
+    # print("Normalised documents gathered")
+
 
     # calculate term frequencies and inverse document frequencies for each term in each file
 
-    print("Calculating inverse document frequencies")
+    print("Calculating inverse document frequencies...")
 
     inverse_document_frequencies = dict()
 
     for word in vocabulary:
         inverse_document_frequencies[word] = calculate_idf(word, normalised_documents)
 
-    print("Calculating term frequencies")
+    print("Calculating term frequencies...")
 
     for container in containers:
         for word in vocabulary:
@@ -140,9 +144,9 @@ def main(directory, threshold=0.7):
     for container in containers:
         container.inverse_document_frequencies = inverse_document_frequencies.copy()
 
-    print("Calculated term frequencies and inverse document frequencies")
+    # print("Calculated term frequencies and inverse document frequencies")
 
-    print("Now comparing documents")
+    print("Comparing documents...")
 
     results = []
 
@@ -162,12 +166,14 @@ def main(directory, threshold=0.7):
             else:
                 similarity = round(cosine_similarity(vector_x, vector_y) * 100, 2)
 
-            if similarity >= threshold:
+            if similarity >= threshold or include:
                 results.append((container_x.path, container_y.path, similarity))
 
-    print("Ordering results")
+    print("Ordering results...")
 
     results = order_similarity_tuples(results)
+
+    print("Generating report...")
 
     # generate html string to write to file
 
@@ -177,7 +183,7 @@ def main(directory, threshold=0.7):
 
     write_string_to_file(string, "similarity_report.html")
 
-    print("Report generated")
+    print("Report generated!")
 
 
 if __name__ == "__main__":
