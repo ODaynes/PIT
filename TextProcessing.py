@@ -9,7 +9,8 @@ different natural language processing utilities.
 More information can be found here: http://www.nltk.org/
 """
 
-from nltk import word_tokenize
+from nltk.tag import pos_tag
+from nltk import word_tokenize, ne_chunk
 from string import punctuation
 from math import log
 
@@ -116,3 +117,23 @@ def create_dense_vectors(container_x, container_y):
         new_y.append(container_y.term_frequencies[term] * container_y.inverse_document_frequencies[term])
 
     return new_x, new_y
+
+
+"""
+Takes raw text string as parameter
+Returns list of entities found within text
+"""
+
+
+def get_named_entities(document_text):
+    tagged_tokens = pos_tag(word_tokenize(document_text))
+    tree = ne_chunk(tagged_tokens, binary=True)
+
+    entities = list()
+
+    for node in tree.subtrees():
+        if node.label() == "NE":
+            words, _ = zip(*node)
+            entities.append(" ".join(words))
+
+    return entities
