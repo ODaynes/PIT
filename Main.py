@@ -8,8 +8,8 @@ from FileContainer import Container
 from TextProcessing import *
 from VectorMaths import *
 
-# bubblesort similarity tuples
 
+# bubblesort similarity tuples
 
 def order_similarity_tuples(tuples):
     if len(tuples) == 0:
@@ -78,6 +78,10 @@ def main(directory, threshold=0.7, include=False):
 
             c.raw = file_contents
 
+            # retrieve named entities
+
+            c.named_entities = get_named_entities(c.raw)
+
             # print("Retrieved raw text")
 
             # tokenise file conents
@@ -91,6 +95,9 @@ def main(directory, threshold=0.7, include=False):
             c.normalised = [stemmer.stem(token.lower()) for token in c.tokens
                             if token not in punctuation and token.lower() not in stopwords.words("english")]
 
+            # add named entities to list of normalised tokens
+
+            [c.normalised.append(entity) for entity in c.named_entities]
             # print("Normalised")
 
             # cannot compare files with no text, report error and skip
@@ -122,7 +129,6 @@ def main(directory, threshold=0.7, include=False):
     normalised_documents = [container.normalised for container in containers]
 
     # print("Normalised documents gathered")
-
 
     # calculate term frequencies and inverse document frequencies for each term in each file
 
