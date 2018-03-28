@@ -44,6 +44,12 @@ def main(directory, threshold=0.7, include=False):
         print("No files found")
         return
 
+    # terminate if only one file
+
+    if len(filepaths) == 1:
+        print("The comparison process requires at least two documents.")
+        return
+
     # invalid files are reported in error report
     # valid files are processed further
 
