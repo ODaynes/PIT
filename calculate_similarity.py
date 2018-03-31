@@ -76,8 +76,11 @@ def calculate():
     if len(error_list) > 0:
         error_popup(error_list)
     else:
-        main(directory, threshold, include)
-        messagebox.showinfo("Success", "Report generated!")
+        result = main(directory, threshold, include)
+        if result == "Success":
+            messagebox.showinfo("Success", "Report generated!")
+        else:
+            messagebox.showerror("Error", result)
 
 
 root = Tk()
