@@ -6,44 +6,62 @@ Designed and created by Owen Daynes.
 """
 
 
-import FileIO
-
-
 class Container:
 
-    def __index__(self):
+    def __init__(self):
         self.path = ""
+        self.index = -1
+        self.raw = ""
+        self.entities = list()
+        self.tokens = list()
+        self.normalised = list()
+        self.term_frequencies = dict()
+        self.idfs = dict()
 
-    # def __init__(self, filepath):
-    #     self.filepath = filepath
-    #     self.raw = FileIO.read_file(filepath)
-    #     self.processed = ""
-    #
-    # def __init__(self, filepath, id, plaintext):
-    #     self.filepath = filepath
-    #     self.id = id
-    #     self.raw = plaintext
-    #     self.tokenised = ""
-    #     self.stems = ""
-    #     self.frequencies = dict()
+    def set_path(self, path):
+        self.path = path
 
-    def path(self):
-        return self.filepath
+    def get_path(self):
+        return self.path
 
-    def raw(self):
+    def set_index(self, index):
+        self.index = index
+
+    def get_index(self):
+        return self.index
+
+    def set_raw_text(self, raw):
+        self.raw = raw
+
+    def get_raw_text(self):
         return self.raw
 
-    def tokens(self):
-        return self.tokenised
+    def set_named_entities(self, entities):
+        self.entities = entities
 
-    def stems(self):
-        return self.stems
+    def get_named_entities(self):
+        return self.entities
 
-    def frequencies(self):
-        return self.frequencies
+    def set_token_list(self, tokens):
+        self.tokens = tokens
 
-    def processed_contents(self):
-        if self.processed == "":
-            self.processed = FileIO.normalise(self.raw)
-        return self.processed
+    def get_token_list(self):
+        return self.tokens
 
+    def set_normalised_text_list(self, normalised):
+        self.normalised = normalised
+
+    def get_normalised_text_list(self):
+        return self.normalised
+
+    def set_term_frequencies(self, term_frequencies):
+        self.term_frequencies = term_frequencies
+
+    def get_term_frequencies(self):
+        return self.term_frequencies
+
+    def set_inverse_document_frequencies(self, idfs):
+        self.idfs = idfs
+
+    def get_inverse_document_frequencies(self):
+        return self.idfs
