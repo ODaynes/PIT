@@ -42,13 +42,13 @@ def main(directory, threshold=0.7, include=False):
 
     if len(filepaths) < 1:
         print("No files found")
-        return
+        return "No files found"
 
     # terminate if only one file
 
     if len(filepaths) == 1:
         print("The comparison process requires at least two documents.")
-        return
+        return "The comparison process requires at least two documents."
 
     # invalid files are reported in error report
     # valid files are processed further
@@ -128,6 +128,11 @@ def main(directory, threshold=0.7, include=False):
 
             print("File %s parsed" % path)
 
+    # refuse further processing if there aren't at least two files containing text
+
+    if len(containers) < 2:
+        return "At least two documents containing text are required."
+
     # collect normalised documents in a single list to be used in idf calculation
 
     print("\nGathering normalised documents...")
@@ -196,6 +201,8 @@ def main(directory, threshold=0.7, include=False):
     write_string_to_file(string, "similarity_report.html")
 
     print("Report generated!")
+
+    return "Success"
 
 
 if __name__ == "__main__":
