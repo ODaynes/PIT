@@ -77,38 +77,41 @@ def process(directory, threshold=0.7, include=False):
             print("\n")
             print("Parsing %s" % path)
             c = Container()
-            c.path = path
-            c.index = index
+            c.set_path(path)
+            c.set_index(index)
 
             # store raw file contents
 
-            c.raw = file_contents
+            c.set_raw_text(file_contents)
 
             # retrieve named entities
 
-            c.named_entities = get_named_entities(c.raw)
+            c.set_named_entities(get_named_entities(c.get_raw_text()))
 
             # print("Retrieved raw text")
 
             # tokenise file conents
 
-            c.tokens = word_tokenize(c.raw)
+            c.set_token_list(word_tokenize(c.get_raw_text()))
 
             # print("Tokenised")
 
             # only keep token stems if tokens aren't punctuation or stop words
 
-            c.normalised = [stemmer.stem(token.lower()) for token in c.tokens
+            normalised = [stemmer.stem(token.lower()) for token in c.get_token_list()
                             if token not in punctuation and token.lower() not in stopwords.words("english")]
 
             # add named entities to list of normalised tokens
 
-            [c.normalised.append(entity) for entity in c.named_entities]
+            [normalised.append(entity) for entity in c.get_named_entities()]
+
+            c.set_normalised_text_list(normalised)
+
             # print("Normalised")
 
             # cannot compare files with no text, report error and skip
 
-            if len(c.normalised) < 1:
+            if len(c.get_normalised_text_list()) < 1:
                 print("File %s is either empty or contains no significant terms." % path)
                 invalid_files.append((path, "File is either empty or contains no significant terms"))
                 continue
@@ -117,10 +120,10 @@ def process(directory, threshold=0.7, include=False):
 
             [vocabulary.append(token) for token in c.normalised if token not in vocabulary]
 
-            # initialise frequency dictionaries
-
-            c.term_frequencies = dict()
-            c.inverse_document_frequencies = dict()
+            # # initialise frequency dictionaries
+            #
+            # c.term_frequencies = dict()
+            # c.inverse_document_frequencies = dict()
 
             # store container to allow further processing later
 
@@ -137,7 +140,7 @@ def process(directory, threshold=0.7, include=False):
 
     print("\nGathering normalised documents...")
 
-    normalised_documents = [container.normalised for container in containers]
+    normalised_documents = [container.get_normalised_text_list() for container in containers]
 
     # print("Normalised documents gathered")
 
@@ -153,16 +156,17 @@ def process(directory, threshold=0.7, include=False):
     print("Calculating term frequencies...")
 
     for container in containers:
+        term_freqs = dict()
         for word in vocabulary:
-            container.term_frequencies[word] = container.normalised.count(word) / len(container.normalised)
+            term_freqs[word] = container.normalised.count(word) / len(container.normalised)
+        container.set_term_frequencies(term_freqs)
 
     # shallow-copying already existing idf dict is faster than recreating each time
 
     for container in containers:
-        container.inverse_document_frequencies = inverse_document_frequencies.copy()
+        container.set_inverse_document_frequencies(inverse_document_frequencies.copy())
 
     # print("Calculated term frequencies and inverse document frequencies")
-
     print("Comparing documents...")
 
     results = []
@@ -184,7 +188,7 @@ def process(directory, threshold=0.7, include=False):
                 similarity = round(cosine_similarity(vector_x, vector_y) * 100, 2)
 
             if similarity >= threshold or include:
-                results.append((container_x.path, container_y.path, similarity))
+                results.append((container_x.get_path(), container_y.get_path(), similarity))
 
     print("Ordering results...")
 
