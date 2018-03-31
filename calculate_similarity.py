@@ -1,7 +1,7 @@
 from tkinter import messagebox
 from tkinter import filedialog
 
-from Main import main
+from pipeline import process
 
 from tkinter import *
 
@@ -76,7 +76,7 @@ def calculate():
     if len(error_list) > 0:
         error_popup(error_list)
     else:
-        result = main(directory, threshold, include)
+        result = process(directory, threshold, include)
         if result == "Success":
             messagebox.showinfo("Success", "Report generated!")
         else:
@@ -135,10 +135,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         # threshold provided
         if len(sys.argv) > 2:
-            main(sys.argv[1], sys.argv[2])
+            process(sys.argv[1], sys.argv[2])
         # threshold not provided
         else:
-            main(sys.argv[1])
+            process(sys.argv[1])
     # path not provided
     else:
         mainloop()

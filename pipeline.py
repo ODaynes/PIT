@@ -22,7 +22,7 @@ def order_similarity_tuples(tuples):
         return tuples
 
 
-def main(directory, threshold=0.7, include=False):
+def process(directory, threshold=0.7, include=False):
 
     try:
         threshold = float(threshold)
@@ -210,10 +210,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         # threshold provided
         if len(sys.argv) > 2:
-            main(sys.argv[1], sys.argv[2])
+            process(sys.argv[1], sys.argv[2])
         # threshold not provided
         else:
-            main(sys.argv[1])
+            process(sys.argv[1])
     # path not provided
     else:
         print("Path of directory containing files required.")
