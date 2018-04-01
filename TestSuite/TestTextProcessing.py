@@ -23,3 +23,15 @@ class TestTextProcessing(unittest.TestCase):
         before = ["Computer", "Science"]
         after = TextProcessing.stem_document(before, snowball.EnglishStemmer())
         assert after[0] == "comput" and after[1] == "scienc"
+
+    def test_get_vocabulary(self):
+        NUMBER_UNIQUE_TERMS = 6
+        documents = [["Computer", "Science"], ["Natural", "Language", "Engineering"], ["Computer", "Science", "Natural", "Language", "Processing"]]
+        vocabulary = TextProcessing.get_vocabulary(documents)
+        assert len(vocabulary) == NUMBER_UNIQUE_TERMS
+
+    def test_calculate_idf(self):
+        term = "computer"
+        documents = [["computer", "science"], ["computer", "engineering"], ["electronic", "engineering"]]
+        idf = TextProcessing.calculate_idf(term, documents)
+        assert idf > 1.0
