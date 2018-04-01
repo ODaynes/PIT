@@ -113,8 +113,8 @@ def create_dense_vectors(container_x, container_y):
     new_x, new_y = list(), list()
 
     for term in shared_vocabulary:
-        new_x.append(container_x.term_frequencies[term] * container_x.inverse_document_frequencies[term])
-        new_y.append(container_y.term_frequencies[term] * container_y.inverse_document_frequencies[term])
+        new_x.append(container_x.term_frequencies[term] * container_x.idfs[term])
+        new_y.append(container_y.term_frequencies[term] * container_y.idfs[term])
 
     return new_x, new_y
 
