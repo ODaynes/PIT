@@ -35,3 +35,9 @@ class TestTextProcessing(unittest.TestCase):
         documents = [["computer", "science"], ["computer", "engineering"], ["electronic", "engineering"]]
         idf = TextProcessing.calculate_idf(term, documents)
         assert idf > 1.0
+
+    def test_create_dense_vectors(self):
+        assert True
+
+    def test_get_named_entities(self):
+        assert True
