@@ -16,10 +16,13 @@ Returns dot product of vectors
 """
 
 
-def dot_product(document1, document2):
+def dot_product(vector1, vector2):
+    if len(vector1) != len(vector2):
+        return None
+
     result = 0
-    for i in range(0, len(document1)):
-        result += document1[i] * document2[i]
+    for i in range(0, len(vector1)):
+        result += vector1[i] * vector2[i]
     return result
 
 
