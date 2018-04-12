@@ -40,4 +40,6 @@ class TestTextProcessing(unittest.TestCase):
         assert True
 
     def test_get_named_entities(self):
-        assert True
+        before = "My name is Owen Daynes and this is the Plagiarism Indication Tool."
+        after = TextProcessing.get_named_entities(before)
+        assert len(after) == 2
