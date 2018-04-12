@@ -5,7 +5,12 @@ import VectorMaths
 class TestVectorMaths(unittest.TestCase):
 
     def test_dot_product(self):
-        assert True
+
+        vector1 = [1, 2, 3]
+        vector2 = [4, 5, 6]
+        # (1 * 4) + (2 * 5) + (3 * 6) = 32
+        result = VectorMaths.dot_product(vector1, vector2)
+        assert result == 32
 
     def test_cosine_similarity(self):
         assert True
