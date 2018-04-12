@@ -36,9 +36,6 @@ class TestTextProcessing(unittest.TestCase):
         idf = TextProcessing.calculate_idf(term, documents)
         assert idf > 1.0
 
-    def test_create_dense_vectors(self):
-        assert True
-
     def test_get_named_entities(self):
         before = "My name is Owen Daynes and this is the Plagiarism Indication Tool."
         after = TextProcessing.get_named_entities(before)
