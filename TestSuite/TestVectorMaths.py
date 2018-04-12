@@ -12,5 +12,12 @@ class TestVectorMaths(unittest.TestCase):
         result = VectorMaths.dot_product(vector1, vector2)
         assert result == 32
 
+    def test_invalid_dot_product(self):
+        vector1 = [1, 2, 3]
+        vector2 = [4, 5]
+
+        result = VectorMaths.dot_product(vector1, vector2)
+        assert result is None
+
     def test_cosine_similarity(self):
         assert True
