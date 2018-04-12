@@ -18,6 +18,3 @@ class TestVectorMaths(unittest.TestCase):
 
         result = VectorMaths.dot_product(vector1, vector2)
         assert result is None
-
-    def test_cosine_similarity(self):
-        assert True
