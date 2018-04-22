@@ -101,8 +101,8 @@ def read_html(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     paragraphs = soup.find_all("p")
-
-    return '\n'.join(paragraphs)
+    paragraphs = [str(p.text.encode("utf-8")) for p in paragraphs]
+    return " ".join(paragraphs)[2:-1]
 
 
 """
