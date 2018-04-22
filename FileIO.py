@@ -15,10 +15,11 @@ More information can be found here: https://github.com/mstamy2/PyPDF2
 """
 
 import os
-
+import requests
 
 import docx2txt
 import PyPDF2
+from bs4 import BeautifulSoup
 
 
 def get_extension(filepath):
@@ -88,6 +89,21 @@ def read_pdf(filepath):
     for i in range(0, reader.numPages):
         result += reader.getPage(i).extractText().replace("\n", "")
     return result
+
+
+"""
+Takes a URL as a parameter
+Returns text body from web page as string
+"""
+
+
+def read_html(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+    paragraphs = soup.find_all("p")
+
+    return '\n'.join(paragraphs)
+
 
 """
 Returns a list of all files within a directory.
