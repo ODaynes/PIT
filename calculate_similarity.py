@@ -70,13 +70,14 @@ def calculate():
     directory = directory_entry.get()
     threshold = threshold_entry.get()
     include = included_check.get()
+    search = subdirs_check.get()
 
     error_list = check_inputs(directory, threshold)
 
     if len(error_list) > 0:
         error_popup(error_list)
     else:
-        result = process(directory, threshold, include)
+        result = process(directory, threshold, include, search)
         if result == "Success":
             messagebox.showinfo("Success", "Report generated!")
         else:
@@ -114,8 +115,15 @@ included_check = IntVar()
 include_not_plagiarism_entry = Checkbutton(root, variable=included_check, background="#a1dbcd")
 include_not_plagiarism_entry.grid(row=3, column=3, columnspan=1)
 
+search_subdirs_label = Label(root, text="Search sub-directories", background="#a1dbcd")
+search_subdirs_label.grid(row=4, column=1, columnspan=1)
+
+subdirs_check = IntVar()
+subdirs_check_entry = Checkbutton(root, variable=subdirs_check, background="#a1dbcd")
+subdirs_check_entry.grid(row=4, column=3, columnspan=1)
+
 process_button = Button(root, text="Calculate similarity", command=calculate)
-process_button.grid(row=4, column=3, columnspan=1)
+process_button.grid(row=5, column=3, columnspan=1)
 
 menu = Menu(root)
 root.config(menu=menu)

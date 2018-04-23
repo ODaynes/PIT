@@ -22,7 +22,7 @@ def order_similarity_tuples(tuples):
         return tuples
 
 
-def process(directory, threshold=0.7, include=False):
+def process(directory, threshold=0.7, include=False, subdirs=True):
 
     try:
         threshold = float(threshold)
@@ -36,7 +36,7 @@ def process(directory, threshold=0.7, include=False):
 
     # get filepaths
 
-    filepaths = generate_file_list(directory, True)
+    filepaths = generate_file_list(directory, subdirs)
 
     # terminate program if no paths
 
@@ -215,6 +215,8 @@ if __name__ == "__main__":
         # threshold provided
         if len(sys.argv) > 2:
             process(sys.argv[1], sys.argv[2])
+            if len(sys.argv) > 3:
+                process(sys.argv[1], sys.argv[2], sys.argv[3])
         # threshold not provided
         else:
             process(sys.argv[1])
