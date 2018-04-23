@@ -11,10 +11,9 @@ sample_urls = [
 
 if __name__ == "__main__":
     for url in sample_urls:
-        filename = "dataset/%s.txt" % url.split("/")[-1]
+        filename = "data/%s.txt" % url.split("/")[-1]
         try:
             text = read_html(url)
-            filename = "dataset/%s.txt" % url.split("/")[-1]
             write_string_to_file(text, filename)
         except MissingSchema as e:
             print(e)
