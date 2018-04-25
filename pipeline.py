@@ -22,7 +22,7 @@ def order_similarity_tuples(tuples):
         return tuples
 
 
-def process(directory, threshold=0.7, include=False, subdirs=True):
+def process(directory, save=".", threshold=0.7, include=False, subdirs=True):
 
     try:
         threshold = float(threshold)
@@ -99,7 +99,7 @@ def process(directory, threshold=0.7, include=False, subdirs=True):
             # only keep token stems if tokens aren't punctuation or stop words
 
             normalised = [stemmer.stem(token.lower()) for token in c.get_token_list()
-                            if token not in punctuation and token.lower() not in stopwords.words("english")]
+                          if token not in punctuation and token.lower() not in stopwords.words("english")]
 
             # add named entities to list of normalised tokens
 
@@ -201,8 +201,12 @@ def process(directory, threshold=0.7, include=False, subdirs=True):
     string = generate_html_string(results, invalid_files, threshold)
 
     # write html string to file
-
-    write_string_to_file(string, "similarity_report.html")
+    write_path = "%s/similarity_report.html" % save
+    try:
+        write_string_to_file(string, write_path)
+    except FileNotFoundError as e:
+        write_path = "./similarity_report.html"
+        write_string_to_file(string, write_path)
 
     print("Report generated!")
 
@@ -210,14 +214,23 @@ def process(directory, threshold=0.7, include=False, subdirs=True):
 
 
 if __name__ == "__main__":
-    # path provided
+    # read path provided
     if len(sys.argv) > 1:
-        # threshold provided
+        # write path provided
         if len(sys.argv) > 2:
-            process(sys.argv[1], sys.argv[2])
+            # threshold provided
             if len(sys.argv) > 3:
-                process(sys.argv[1], sys.argv[2], sys.argv[3])
-        # threshold not provided
+                # include inoffensive provided
+                if len(sys.argv) > 4:
+                    # include sub directories provided
+                    if len(sys.argv) > 5:
+                        process(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+                    else:
+                        process(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+                else:
+                    process(sys.argv[1], sys.argv[2], sys.argv[3])
+            else:
+                process(sys.argv[1], sys.argv[2])
         else:
             process(sys.argv[1])
     # path not provided
